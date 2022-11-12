@@ -1,0 +1,42 @@
+version: '3'
+services:
+    broker:
+        build: broker
+        container_name: broker
+        environment:
+            SERVER_HOST:
+
+    auldfellas:
+        build: auldfellas
+        container_name: auldfellas
+        environment:
+            SERVER_HOST: broker
+        depends_on:
+            - broker
+
+    doggydrivers:
+        build: doggydrivers
+        container_name: doggydrivers
+        environment:
+            SERVER_HOST: broker
+        depends_on:
+            - broker
+
+    girlpower:
+        build: girlpower
+        container_name: girlpower
+        environment:
+            SERVER_HOST: broker
+        depends_on:
+            - broker
+
+    client:
+        build: client
+        container_name: client
+        environment:
+            SERVER_HOST: broker
+        depends_on:
+             - broker
+             - auldfellas
+             - doggydrivers
+             - girlpower
