@@ -1,0 +1,67 @@
+version: '3.9'
+services:
+    activemq:
+        container_name: ActiveMQ
+        image: rmohr/activemq:latest
+        ports:
+            -   8161:8161
+            -   61616:61616
+        healthcheck:
+            test: "curl -f localhost:8161"
+            interval: 5s
+            timeout: 5s
+            retries: 20
+
+    auldfellas:
+        build: auldfellas
+        container_name: auldfellas
+        environment:
+            ARGS: activemq
+        depends_on:
+            activemq:
+                condition: service_healthy
+
+    dodgydrivers:
+        build: dodgydrivers
+        container_name: dodgydrivers
+        environment:
+            ARGS: activemq
+        depends_on:
+            activemq:
+                condition: service_healthy
+
+    girlpower:
+        build: girlpower
+        container_name: girlpower
+        environment:
+            ARGS: activemq
+        depends_on:
+            activemq:
+                condition: service_healthy
+
+    broker:
+        build: broker
+        container_name: broker
+        environment:
+            ARGS: activemq
+        depends_on:
+            activemq:
+                condition: service_healthy
+
+    client:
+        build: client
+        container_name: client
+        environment:
+            ARGS: activemq
+        depends_on:
+            girlpower:
+                condition: service_started
+            dodgydrivers:
+                condition: service_started
+            auldfellas:
+                condition: service_started
+            broker:
+                condition: service_started
+            activemq:
+                condition: service_healthy
+
