@@ -1,0 +1,45 @@
+version: '3'
+services:
+    broker:
+        build: broker
+        container_name: broker
+        environment:
+            ARGS: -m ${MODE} -h auldfellas -p 9001 -h dodgydrivers -p 9002 -h girlpower -p 9003
+        ports:
+            -   "9000:9000"
+
+    auldfellas:
+        build: auldfellas
+        container_name: auldfellas
+        environment:
+            ARGS: -m ${MODE}
+        depends_on:
+            - broker
+
+    dodgydrivers:
+        build: dodgydrivers
+        container_name: dodgydrivers
+        environment:
+            ARGS: -m ${MODE}
+        depends_on:
+            - broker
+
+    girlpower:
+        build: girlpower
+        container_name: girlpower
+        environment:
+            ARGS: -m ${MODE}
+        depends_on:
+            - broker
+
+    client:
+        build: client
+        container_name: client
+        environment:
+            ARGS: "-h broker -p 9000"
+        depends_on:
+            - broker
+            - auldfellas
+            - dodgydrivers
+            - girlpower
+
